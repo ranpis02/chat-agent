@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Ragent Full Stack" type="CompoundRunConfigurationType">
+    <toRun name="Ragent Backend" type="SpringBootApplicationConfigurationType" />
+    <toRun name="Ragent Frontend" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>
