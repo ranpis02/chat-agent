@@ -38,6 +38,9 @@ export function LoginPage() {
       <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/50 to-blue-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900" />
       <div className="relative z-10 w-full max-w-md rounded-3xl border border-border/70 bg-background/80 p-8 shadow-soft backdrop-blur">
         <div className="mb-6">
+          <p className="mb-4 text-sm font-semibold tracking-tight text-foreground">
+            AGENT 智能问答平台
+          </p>
           <p className="font-display text-2xl font-semibold">欢迎回来</p>
           <p className="mt-1 text-sm text-muted-foreground">
             登录后继续你的检索增强对话。

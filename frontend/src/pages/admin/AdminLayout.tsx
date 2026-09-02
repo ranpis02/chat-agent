@@ -9,18 +9,20 @@ import {
   ClipboardList,
   Database,
   GitBranch,
-  Github,
   Layers,
   LayoutDashboard,
   Lightbulb,
   LogOut,
   Menu,
   MessageSquare,
+  Monitor,
+  Moon,
   KeyRound,
   Search,
   Share2,
   ShieldCheck,
   Settings,
+  Sun,
   Upload,
   Users,
   FolderKanban,
@@ -38,7 +40,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useGitHubStars } from "@/hooks/useGitHubStars";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { changePassword } from "@/services/userService";
@@ -49,6 +50,7 @@ import {
   type KnowledgeDocumentSearchItem
 } from "@/services/knowledgeService";
 import { Avatar } from "@/components/common/Avatar";
+import { useThemeStore, type ThemeMode } from "@/stores/themeStore";
 
 type MenuChild = {
   path: string;
@@ -195,6 +197,8 @@ export function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
+  const themeMode = useThemeStore((state) => state.mode);
+  const setTheme = useThemeStore((state) => state.setTheme);
   const [collapsed, setCollapsed] = useState(false);
   const [passwordOpen, setPasswordOpen] = useState(false);
   const [passwordSubmitting, setPasswordSubmitting] = useState(false);
@@ -203,7 +207,6 @@ export function AdminLayout() {
     newPassword: "",
     confirmPassword: ""
   });
-  const starCount = useGitHubStars();
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({ ingestion: true, intent: true });
   const [kbQuery, setKbQuery] = useState("");
   const [kbOptions, setKbOptions] = useState<KnowledgeBase[]>([]);
@@ -329,13 +332,6 @@ export function AdminLayout() {
   const avatarUrl = user?.avatar?.trim();
   const showAvatar = Boolean(avatarUrl);
   const roleLabel = user?.role === "admin" ? "管理员" : "成员";
-  const starLabel = useMemo(() => {
-    if (starCount === null) return "--";
-    if (starCount < 1000) return String(starCount);
-    const rounded = Math.round((starCount / 1000) * 10) / 10;
-    const text = String(rounded).replace(/\.0$/, "");
-    return `${text}k`;
-  }, [starCount]);
   const isIngestionActive = location.pathname.startsWith("/admin/ingestion");
   const isIntentActive =
     location.pathname.startsWith("/admin/intent-tree") || location.pathname.startsWith("/admin/intent-list");
@@ -444,6 +440,14 @@ export function AdminLayout() {
 
   const hasQuery = kbQuery.trim().length > 0;
   const showSuggest = searchFocused && hasQuery;
+  const nextThemeMode: Record<ThemeMode, ThemeMode> = {
+    system: "light",
+    light: "dark",
+    dark: "system"
+  };
+  const ThemeIcon = themeMode === "system" ? Monitor : themeMode === "light" ? Sun : Moon;
+  const themeLabel =
+    themeMode === "system" ? "跟随系统" : themeMode === "light" ? "浅色模式" : "深色模式";
 
   return (
     <div className="admin-layout flex h-screen">
@@ -455,7 +459,7 @@ export function AdminLayout() {
             </div>
             {!collapsed && (
               <div className="min-w-0">
-                <h1 className="admin-sidebar__title">Ragent AI 管理后台</h1>
+                <h1 className="admin-sidebar__title">AGENT 智能问答平台</h1>
                 <p className="admin-sidebar__subtitle">Knowledge Console</p>
               </div>
             )}
@@ -696,6 +700,15 @@ export function AdminLayout() {
             </div>
             <div className="flex items-center gap-2">
               <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(nextThemeMode[themeMode])}
+                aria-label={`当前${themeLabel}，点击切换`}
+                title={`主题：${themeLabel}`}
+              >
+                <ThemeIcon className="h-4 w-4" />
+              </Button>
+              <Button
                 variant="outline"
                 className="hidden items-center gap-2 sm:inline-flex"
                 onClick={() => window.open("/chat", "_blank")}
@@ -703,19 +716,6 @@ export function AdminLayout() {
                 <MessageSquare className="h-4 w-4" />
                 返回聊天
               </Button>
-              <a
-                href="https://github.com/nageoffer/ragent"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
-                aria-label="打开 GitHub 仓库"
-              >
-                <Github className="h-4 w-4" />
-                <span className="font-medium">Star</span>
-                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
-                  {starLabel}
-                </span>
-              </a>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button

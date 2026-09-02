@@ -18,7 +18,7 @@ export function ChangeLogsPage() {
                 </Button>
               </Link>
               <div>
-                <div className="text-sm font-semibold text-slate-900">Ragent AI</div>
+                <div className="text-sm font-semibold text-slate-900">AGENT 智能问答平台</div>
                 <div className="text-xs text-slate-500">业务变更审计</div>
               </div>
             </div>

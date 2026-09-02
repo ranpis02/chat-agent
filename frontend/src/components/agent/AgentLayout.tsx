@@ -1,10 +1,10 @@
 import * as React from "react";
-import { Github } from "lucide-react";
+import { Monitor, Moon, Sun } from "lucide-react";
 
 import { AgentRawLog } from "@/components/agent/AgentRawLog";
 import { AgentSidebar } from "@/components/agent/AgentSidebar";
-import { useGitHubStars } from "@/hooks/useGitHubStars";
 import { getAgentMeta } from "@/services/agentService";
+import { useThemeStore, type ThemeMode } from "@/stores/themeStore";
 import type { AgentEngineMeta } from "@/types/agent";
 
 export type AgentMetaState =
@@ -42,9 +42,15 @@ interface AgentHeaderProps {
 }
 
 function AgentHeader({ meta, rawOpen, onToggleRaw }: AgentHeaderProps) {
-  const starCount = useGitHubStars();
-
-  const starLabel = starCount === null ? null : starCount.toLocaleString("en-US");
+  const mode = useThemeStore((state) => state.mode);
+  const setTheme = useThemeStore((state) => state.setTheme);
+  const nextMode: Record<ThemeMode, ThemeMode> = {
+    system: "light",
+    light: "dark",
+    dark: "system"
+  };
+  const themeLabel = mode === "system" ? "跟随系统" : mode === "light" ? "浅色模式" : "深色模式";
+  const ThemeIcon = mode === "system" ? Monitor : mode === "light" ? Sun : Moon;
 
   const badgeName =
     meta.status === "online" ? meta.meta.framework : meta.status === "probing" ? "探测中" : "离线";
@@ -52,9 +58,8 @@ function AgentHeader({ meta, rawOpen, onToggleRaw }: AgentHeaderProps) {
   return (
     <header className="agent-header">
       <div className="agent-brand">
-        <span className="agent-wordmark">RAGENT</span>
-        <span className="agent-brand-sep">/</span>
-        <span className="agent-brand-tag">智能体</span>
+        <span className="agent-brand-mark" aria-hidden="true">A</span>
+        <span className="agent-wordmark">AGENT 智能问答平台</span>
       </div>
 
       <div className="agent-header-center">
@@ -73,17 +78,15 @@ function AgentHeader({ meta, rawOpen, onToggleRaw }: AgentHeaderProps) {
       </div>
 
       <div className="agent-header-right">
-        <a
-          href="https://github.com/nageoffer/ragent"
-          target="_blank"
-          rel="noreferrer"
+        <button
+          type="button"
           className="agent-head-btn"
-          data-github="true"
-          aria-label="打开 GitHub 仓库"
+          onClick={() => setTheme(nextMode[mode])}
+          aria-label={`当前${themeLabel}，点击切换`}
+          title={`主题：${themeLabel}`}
         >
-          <Github className="h-3.5 w-3.5" strokeWidth={1.5} />
-          {starLabel ? <span className="agent-btn-glyph">{starLabel}</span> : null}
-        </a>
+          <ThemeIcon className="h-4 w-4" strokeWidth={1.8} />
+        </button>
         <button
           type="button"
           className="agent-head-btn"

@@ -82,7 +82,7 @@ export function ChatPage() {
   return (
     <MainLayout>
       <div className="flex h-full">
-        <div className="flex h-full min-w-0 flex-1 flex-col bg-white">
+        <div className="flex h-full min-w-0 flex-1 flex-col bg-white dark:bg-[#212121]">
           <div className="flex-1 min-h-0">
             <MessageList
               messages={messages}
@@ -92,7 +92,7 @@ export function ChatPage() {
             />
           </div>
           {showWelcome ? null : (
-            <div className="relative z-20 bg-white">
+            <div className="relative z-20 bg-white dark:bg-[#212121]">
               <div className="mx-auto max-w-[840px] px-6 pt-1 pb-4">
                 <ChatInput />
               </div>

@@ -40,6 +40,7 @@ import {
   type DashboardPerformance,
   type DashboardTrends
 } from "@/services/dashboardService";
+import { useThemeStore } from "@/stores/themeStore";
 
 // ============================================================================
 // Types
@@ -886,6 +887,7 @@ const TrendChartItem = ({
   yAxisLabel?: string;
   loading?: boolean;
 }) => {
+  const theme = useThemeStore((state) => state.theme);
   if (loading) {
     return (
         <div className="rounded-xl bg-slate-50 p-4">
@@ -906,7 +908,7 @@ const TrendChartItem = ({
               yAxisType={yAxisType}
               thresholds={thresholds}
               height={192}
-              theme="light"
+              theme={theme}
               yAxisTickCount={4}
           />
         </div>
